@@ -270,14 +270,14 @@ func (setHeaderErroringInterceptor) OnError(w safehttp.ResponseWriter, r *safeht
 func TestMuxInterceptors(t *testing.T) {
 	tests := []struct {
 		name        string
-		mux         *safehttp.ServeMux
+		mux         *http.ServeMux
 		wantStatus  safehttp.StatusCode
 		wantHeaders map[string][]string
 		wantBody    string
 	}{
 		{
 			name: "Install ServeMux Interceptor before handler registration",
-			mux: func() *safehttp.ServeMux {
+			mux: func() *http.ServeMux {
 				mb := &safehttp.ServeMuxConfig{}
 				mb.Intercept(setHeaderInterceptor{
 					name:  "Foo",
@@ -299,7 +299,7 @@ func TestMuxInterceptors(t *testing.T) {
 		},
 		{
 			name: "Install Interrupting Interceptor",
-			mux: func() *safehttp.ServeMux {
+			mux: func() *http.ServeMux {
 				mb := &safehttp.ServeMuxConfig{}
 				mb.Intercept(internalErrorInterceptor{})
 
@@ -319,7 +319,7 @@ func TestMuxInterceptors(t *testing.T) {
 		},
 		{
 			name: "Handler Communication With ServeMux Interceptor",
-			mux: func() *safehttp.ServeMux {
+			mux: func() *http.ServeMux {
 				mb := &safehttp.ServeMuxConfig{}
 				mb.Intercept(&claimHeaderInterceptor{headerToClaim: "Foo"})
 
@@ -340,7 +340,7 @@ func TestMuxInterceptors(t *testing.T) {
 		},
 		{
 			name: "Panicking interceptor recovered by ServeMux",
-			mux: func() *safehttp.ServeMux {
+			mux: func() *http.ServeMux {
 				mb := &safehttp.ServeMuxConfig{}
 				mb.Intercept(panickingInterceptor{})
 
@@ -360,7 +360,7 @@ func TestMuxInterceptors(t *testing.T) {
 		},
 		{
 			name: "Commit phase sets header",
-			mux: func() *safehttp.ServeMux {
+			mux: func() *http.ServeMux {
 				mb := &safehttp.ServeMuxConfig{}
 				mb.Intercept(committerInterceptor{})
 
@@ -380,7 +380,7 @@ func TestMuxInterceptors(t *testing.T) {
 		},
 		{
 			name: "OnError phase sets header",
-			mux: func() *safehttp.ServeMux {
+			mux: func() *http.ServeMux {
 				mb := &safehttp.ServeMuxConfig{}
 				mb.Intercept(setHeaderErroringInterceptor{})
 
